@@ -247,11 +247,7 @@ async function registerUser(event, baseUrl) {
     return;
   }
 
-  const newUser = {
-    username,
-    password,
-    role,
-  };
+  const newUser = { username, password, role, };
 
   const res = await fetch(`${baseUrl}/register`, {
     method: 'POST',
