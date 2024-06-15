@@ -48,59 +48,48 @@ window.addEventListener('load', () => {
 
 // Fetch posts
 async function fetchPosts(baseUrl) {
-  try {
-    const res = await fetch(`${baseUrl}/posts`);
+  const res = await fetch(`${baseUrl}/posts`);
+  const data = await res.json();
+  const postsList = document.getElementById('posts-list');
+  const isAdmin = localStorage.getItem('userRole') === 'admin';
 
-    // Check if the response status is not OK (200)
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
+  if (postsList) {
+    postsList.innerHTML = data
+      .map((post, index) => {
+        const deleteButtonStyle = isAdmin ? '' : 'display: none';
+        const updateButtonStyle = isAdmin ? '' : 'display: none';
 
-    const data = await res.json();
-    const postsList = document.getElementById('posts-list');
-    const isAdmin = localStorage.getItem('userRole') === 'admin';
-
-    if (postsList) {
-      postsList.innerHTML = data
-        .map((post, index) => {
-          const deleteButtonStyle = isAdmin ? '' : 'display: none';
-          const updateButtonStyle = isAdmin ? '' : 'display: none';
-
-          return `
-        <div id="${post._id}" class="post">
-            <img src="${post.imageUrl}" alt="Image" />
-            <div class="post-title">
-              ${
-                index === 0
-                  ? `<h1><a href="/post/${post._id}">${post.title}</a></h1>`
-                  : `<h3><a href="/post/${post._id}">${post.title}</a></h3>`
-              }
-            </div>
+        return `
+      <div id="${post._id}" class="post">
+          <img src="${post.imageUrl}" alt="Image" />
+          <div class="post-title">
             ${
               index === 0
-                ? `<span><p>${post.author}</p><p>${post.timestamp}</p></span>`
-                : ''
+                ? `<h1><a href="/post/${post._id}">${post.title}</a></h1>`
+                : `<h3><a href="/post/${post._id}">${post.title}</a></h3>`
             }
-            <div id="admin-buttons">
-              <button class="btn" style="${deleteButtonStyle}" onclick="deletePost('${
-            post._id
-          }', '${baseUrl}')">Delete</button>
-              <button class="btn" style="${updateButtonStyle}" onclick="showUpdateForm('${
-            post._id
-          }', '${post.title}', '${post.content}')">Update</button>
-            </div>
-            ${index === 0 ? '<hr>' : ''}
-            ${index === 0 ? '<h2>All Articles</h2>' : ''}
           </div>
-        `;
-        })
-        .join('');
-    }
-  } catch (error) {
-    console.error('Error fetching posts:', error);
+          ${
+            index === 0
+              ? `<span><p>${post.author}</p><p>${post.timestamp}</p></span>`
+              : ''
+          }
+          <div id="admin-buttons">
+            <button class="btn" style="${deleteButtonStyle}" onclick="deletePost('${
+          post._id
+        }', '${baseUrl}')">Delete</button>
+            <button class="btn" style="${updateButtonStyle}" onclick="showUpdateForm('${
+          post._id
+        }', '${post.title}', '${post.content}')">Update</button>
+          </div>
+          ${index === 0 ? '<hr>' : ''}
+          ${index === 0 ? '<h2>All Articles</h2>' : ''}
+        </div>
+      `;
+      })
+      .join('');
   }
 }
-
 
 async function createPost(event, baseUrl) {
   event.preventDefault();
@@ -254,7 +243,7 @@ async function registerUser(event, baseUrl) {
 
   // ensure that inputs are not empty
   if (!username || !password || !role) {
-    alert('Please fill in all fields.');
+    alert('Please fill in all fields 3.');
     return;
   }
 
@@ -264,43 +253,26 @@ async function registerUser(event, baseUrl) {
     role,
   };
 
-  try {
-    const res = await fetch(`${baseUrl}/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newUser),
-    });
+  const res = await fetch(`${baseUrl}/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newUser),
+  });
 
-    if (!res.ok) {
-      // Handle HTTP errors
-      alert(`Registration failed: ${res.statusText}`);
-      return;
-    }
+  const data = await res.json();
 
-    const data = await res.json().catch(() => {
-      // Handle JSON parse errors
-      alert('Failed to parse server response.');
-      return null;
-    });
-
-    if (data && data.success) {
-      alert('Registered successfully!');
-      // Clear input fields
-      usernameInput.value = '';
-      passwordInput.value = '';
-      roleInput.value = '';
-    } else {
-      alert('Registration failed.');
-    }
-  } catch (error) {
-    // Handle fetch errors
-    alert('An error occurred during registration. Please try again later.');
-    console.error('Error:', error);
+  if (data.success) {
+    alert('Registered successful!');
+    // Clear input fields
+    usernameInput.value = '';
+    passwordInput.value = '';
+    roleInput.value = '';
+  } else {
+    alert('Registration failed.');
   }
 }
-
 
 // Loging user
 async function loginUser(event, baseUrl) {
