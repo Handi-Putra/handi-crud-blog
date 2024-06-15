@@ -148,7 +148,7 @@ app.get('/posts', async (req, res) => {
     res.status(200).send(posts);
 });
 
-app.post('/posts', authenticateJWT, async (req, res) => {
+app.post('/posts', authenticationJWT, async (req, res) => {
     if (req.user.role === 'admin') {
         const { title, content, imageUrl, author, timestamp } = req.body;
 
@@ -197,7 +197,7 @@ app.get('/post/:id', async (req, res) => {
 });
 
 // Delete Post
-app.delete('/posts/:id', authenticateJWT, async (req, res) => {
+app.delete('/posts/:id', authenticationJWT, async (req, res) => {
 if (req.user.role == 'admin') {
     try {
           await Post.findByIdAndDelete(req.params.id);
@@ -213,7 +213,7 @@ if (req.user.role == 'admin') {
 
 
 // Update Post
-app.put('/posts/:id', authenticateJWT, async (req, res) => {
+app.put('/posts/:id', authenticationJWT, async (req, res) => {
     const { title, content } = req.body;
     const postId = req.params.id;
   
