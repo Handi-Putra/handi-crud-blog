@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handi's Blog</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="script.js" defer></script>
+    <script src="nav.js" defer></script>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav__logo">
+            <a href="/">Handi's Blog</a>
+        </div>
+        <a class="nav__hamburger">
+            <span class="nav__hamburger__line"></span>
+            <span class="nav__hamburger__line"></span>
+            <span class="nav__hamburger__line"></span>
+        </a>
+        <div class="nav__menu">
+            <div>
+                <div id="register-div">
+                    <h1>Register</h1>
+                    <form id="register-form">
+                        <input type="text" id="register-username" placeholder="Username" />
+                        <input type="password" id="register-password" placeholder="Password" />
+                        <select id="register-role">
+                            <option value="reader">Reader</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <button type="submit">Register</button>
+                    </form>
+                </div>
+
+                <div id="logout-div">
+                    <h2 id="username">Username</h2>
+                    <button id="logout-button">Logout</button>
+                </div>
+
+                <div id="login-div">
+                    <h1>Login</h1>
+                    <form id="login-form">
+                        <input type="text" id="login-username" placeholder="Username" />
+                        <input type="password" id="login-password" placeholder="Password" />
+                    </form>
+                    <button id="login-button" type="submit">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- GET BACK TO HERE -->
+        <div id="posts-list">
+            <div id="post-id" class="post">
+                <img src="https://plus.unsplash.com/premium_photo-1718169684200-22b1dcd0356b?w=1400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHx8" alt="Image">
+                <div class="post-title">
+                    <h1><a href="#">Post Title for a nice post</a></h1>
+                </div>
+                <span>
+                    <p>Author</p>
+                    <p>Timestamp</p>
+                </span>
+                <div id="admin-buttons">
+                    <button class="btn">Delete</button>
+                    <button class="btn">Create</button>
+                </div>
+                <hr>
+            </div>
+
+            <div id="post-id" class="post">
+                <img src="https://plus.unsplash.com/premium_photo-1718169684200-22b1dcd0356b?w=1400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHx8" alt="Image">
+                <div class="post-title">
+                    <h3><a href="#">Post Title for a nice post</a></h3>
+                </div>
+                <span>
+                    <p>Author</p>
+                    <p>Timestamp</p>
+                </span>
+                <div id="admin-buttons">
+                    <button class="btn">Delete</button>
+                    <button class="btn">Create</button>
+                </div>
+                <hr>
+            </div>
+        </div>
+
+        <div id="new-post-div" style="display: none;">
+            <h2>New Post</h2>
+            <form id="new-post-form">
+                <input type="text" id="title" placeholder="Title" />
+                <textarea id="content" placeholder="Content"></textarea>
+                <input type="text" id="image-url" placeholder="Image URL">
+                <button type="submit">Create Post</button>
+            </form>
+        </div>
+
+        <div id="post-detail-container">
+
+        </div>
+    </main>
+
+    <footer>
+        <h3>Handi's Blog</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius minus natus omnis ad odio blanditiis dolorum perspiciatis id vitae eaque.</p>
+        <span><p>&copy;</p>
+        <script>document.write(new Date().getFullYear());</script>  </span>
+    </footer>
+</body>
+</html>
