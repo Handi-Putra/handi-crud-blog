@@ -243,7 +243,7 @@ async function registerUser(event, baseUrl) {
 
   // ensure that inputs are not empty
   if (!username || !password || !role) {
-    alert('Please fill in all fields 3.');
+    alert('Please fill in all fields.');
     return;
   }
 
@@ -253,26 +253,43 @@ async function registerUser(event, baseUrl) {
     role,
   };
 
-  const res = await fetch(`${baseUrl}/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newUser),
-  });
+  try {
+    const res = await fetch(`${baseUrl}/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newUser),
+    });
 
-  const data = await res.json();
+    if (!res.ok) {
+      // Handle HTTP errors
+      alert(`Registration failed: ${res.statusText}`);
+      return;
+    }
 
-  if (data.success) {
-    alert('Registered successful!');
-    // Clear input fields
-    usernameInput.value = '';
-    passwordInput.value = '';
-    roleInput.value = '';
-  } else {
-    alert('Registration failed.');
+    const data = await res.json().catch(() => {
+      // Handle JSON parse errors
+      alert('Failed to parse server response.');
+      return null;
+    });
+
+    if (data && data.success) {
+      alert('Registered successfully!');
+      // Clear input fields
+      usernameInput.value = '';
+      passwordInput.value = '';
+      roleInput.value = '';
+    } else {
+      alert('Registration failed.');
+    }
+  } catch (error) {
+    // Handle fetch errors
+    alert('An error occurred during registration. Please try again later.');
+    console.error('Error:', error);
   }
 }
+
 
 // Loging user
 async function loginUser(event, baseUrl) {
