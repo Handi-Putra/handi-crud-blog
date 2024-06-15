@@ -114,11 +114,11 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     // Sanitize and Validate User input
-    const sanitizeUsername = validator.escape(username);
-    const sanitizePassword = validator.escape(password);
+    const sanitizedUsername = validator.escape(username);
+    const sanitizedPassword = validator.escape(password);
 
     // Ensure Valid Input Data
-    if (!sanitizeUsername || !sanitizePassword) {
+    if (!sanitizedUsername || !sanitizedPassword) {
         return res.status(400).send({ error: 'Invalid input data' });
     }
 
