@@ -247,15 +247,19 @@ async function registerUser(event, baseUrl) {
     return;
   }
 
-  const newUser = { username, password, role };
+  const newUser = {
+    username,
+    password,
+    role,
+  };
 
   const res = await fetch(`${baseUrl}/register`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(newUser)
-  })
+    body: JSON.stringify(newUser),
+  });
 
   const data = await res.json();
 
