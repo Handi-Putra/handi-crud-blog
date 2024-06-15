@@ -89,19 +89,19 @@ app.post('/register', async (req, res) => {
     const { username, password, role } = req.body;
 
     // Sanitiza and validate User Input for Safety
-    const sanitizeUsername = validator.escape(username);
-    const sanitizePassword = validator.escape(password);
+    const sanitizedUsername = validator.escape(username);
+    const sanitizedPassword = validator.escape(password);
 
     // Ensure validate Input Data
-    if (!sanitizeUsername || !sanitizePassword) {
+    if (!sanitizedUsername || !sanitizedPassword) {
         return res.status(400).send({error: 'Invalid input data'});
     }
 
-    const hashedPassword = await bcrypt.hash(sanitizePassword, 10);
+    const hashedPassword = await bcrypt.hash(sanitizedPassword, 10);
 
     const newUser = new User({
-        username: sanitizeUsername,
-        password: sanitizePassword,
+        username: sanitizedUsername,
+        password: sanitizedPassword,
         role,
     });
 
