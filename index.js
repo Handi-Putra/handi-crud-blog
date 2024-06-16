@@ -93,7 +93,7 @@ const authenticateJWT = (req, res, next) => {
 };
 
 // User registration
-app.post('/index.html/register', async (req, res) => {
+app.post('/register', async (req, res) => {
   const { username, password, role } = req.body;
 
   // Sanitize and validate user input
