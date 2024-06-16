@@ -242,7 +242,7 @@ async function registerUser(event, baseUrl) {
   const password = passwordInput.value;
   const role = roleInput.value;
 
-  const baseUrl = window.location.origin;
+  const baseUrl1 = baseUrl;
 
   // ensure that inputs are not empty
   if (!username || !password || !role) {
@@ -259,7 +259,7 @@ async function registerUser(event, baseUrl) {
   console.log('Registering new user:', newUser);  // Log user data to verify
 
 
-  const res = await fetch(`${baseUrl}/register`, {
+  const res = await fetch(`${baseUrl1}/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
