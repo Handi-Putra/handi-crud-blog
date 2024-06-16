@@ -11,6 +11,8 @@ usernameElement.textContent = storedUsername;
 // Load page and event listeners
 document.addEventListener('DOMContentLoaded', () => {
   const baseUrl = window.location.origin;
+  console.log('Base URL:', baseUrl);  // Log base URL to verify it
+
   fetchPosts(baseUrl);
 
   if (storedToken) {
@@ -30,8 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const registerForm = document.getElementById('register-form');
   registerForm.addEventListener('submit', (event) => registerUser(event, baseUrl));
-
-  console.log(baseUrl);
 
 });
 
@@ -253,6 +253,9 @@ async function registerUser(event, baseUrl) {
     password,
     role,
   };
+
+  console.log('Registering new user:', newUser);  // Log user data to verify
+
 
   const res = await fetch(`${baseUrl}/register`, {
     method: 'POST',
