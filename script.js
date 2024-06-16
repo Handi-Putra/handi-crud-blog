@@ -255,23 +255,30 @@ async function registerUser(event, baseUrl) {
 
   const res = await fetch(`${baseUrl}/register`, {
     method: 'POST',
-    // headers: {
-    //   'Content-Type': 'application/json',
-    // },
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(newUser),
   });
-
+  
   const data = await res.json();
 
-  if (data.success) {
-    alert('Registered successful!');
-    // Clear input fields
-    usernameInput.value = '';
-    passwordInput.value = '';
-    roleInput.value = '';
-  } else {
-    alert('Registration failed.');
-  }
+  data.success;
+  alert('Registered successful!');
+  // Clear input fields
+  usernameInput.value = '';
+  passwordInput.value = '';
+  roleInput.value = '';
+
+  // if (data.success) {
+  //   alert('Registered successful!');
+  //   // Clear input fields
+  //   usernameInput.value = '';
+  //   passwordInput.value = '';
+  //   roleInput.value = '';
+  // } else {
+  //   alert('Registration failed.');
+  // }
 }
 
 // Loging user
