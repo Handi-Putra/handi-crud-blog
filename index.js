@@ -97,16 +97,21 @@ app.post('/register', async (req, res) => {
     return res.status(400).send({ error: 'Invalid input data' });
   }
 
-  const hashedPassword = await bcrypt.hash(sanitizedPassword, 10);
-
-  const newUser = new User({
-    username: sanitizedUsername,
-    password: hashedPassword,
-    role,
-  });
-
-  await newUser.save();
-  res.status(201).send({ success: true });
+  try {
+    const hashedPassword = await bcrypt.hash(sanitizedPassword, 10);
+  
+    const newUser = new User({
+      username: sanitizedUsername,
+      password: hashedPassword,
+      role,
+    });
+  
+    await newUser.save();
+    res.status(201).send({ success: true });
+  } catch (error) {
+    console.error('Error Registration: ', error);
+    res.status(500).send({ error: 'Internal Server Error '});
+  }
 });
 
 // User login
