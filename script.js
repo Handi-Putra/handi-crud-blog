@@ -29,9 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   loginForm.addEventListener('submit', (event) => loginUser(event, baseUrl));
 
   const registerForm = document.getElementById('register-form');
-  registerForm.addEventListener('submit', (event) =>
-    registerUser(event, baseUrl)
-  );
+  registerForm.addEventListener('submit', (event) => registerUser(event, baseUrl));
+
+  console.log(baseUrl);
+
 });
 
 // Post details
@@ -263,22 +264,22 @@ async function registerUser(event, baseUrl) {
   
   const data = await res.json();
 
-  data.success;
-  alert('Registered successful!');
-  // Clear input fields
-  usernameInput.value = '';
-  passwordInput.value = '';
-  roleInput.value = '';
+  // data.success;
+  // alert('Registered successful!');
+  // // Clear input fields
+  // usernameInput.value = '';
+  // passwordInput.value = '';
+  // roleInput.value = '';
 
-  // if (data.success) {
-  //   alert('Registered successful!');
-  //   // Clear input fields
-  //   usernameInput.value = '';
-  //   passwordInput.value = '';
-  //   roleInput.value = '';
-  // } else {
-  //   alert('Registration failed.');
-  // }
+  if (data.success) {
+    alert('Registered successful!');
+    // Clear input fields
+    usernameInput.value = '';
+    passwordInput.value = '';
+    roleInput.value = '';
+  } else {
+    alert('Registration failed.');
+  }
 }
 
 // Loging user
