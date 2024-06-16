@@ -89,6 +89,8 @@ async function fetchPosts(baseUrl) {
           `;
         })
         .join('');
+    } else {
+      console.log("Empty");
     }
   } catch (error) {
     console.error('Error fetching posts:', error);
