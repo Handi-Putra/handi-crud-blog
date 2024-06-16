@@ -264,6 +264,8 @@ async function registerUser(event, baseUrl) {
     },
     body: JSON.stringify(newUser),
   });
+
+  console.log('Result Res: ', res);
   
   const data = await res.json();
 
