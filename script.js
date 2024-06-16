@@ -1,12 +1,12 @@
-// Client
-
 // Get stored data
 let storedToken = localStorage.getItem('jwtToken');
 let storedUsername = localStorage.getItem('username');
 
 // Set the username in the HTML
 const usernameElement = document.getElementById('username');
-usernameElement.textContent = storedUsername;
+if (usernameElement) {
+  usernameElement.textContent = storedUsername;
+}
 
 // Load page and event listeners
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,11 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const loginForm = document.getElementById('login-form');
-  loginForm.addEventListener('submit', (event) => loginUser(event, baseUrl));
+  if (loginForm) {
+    loginForm.addEventListener('submit', (event) => loginUser(event, baseUrl));
+  }
 
   const registerForm = document.getElementById('register-form');
-  registerForm.addEventListener('submit', (event) => registerUser(event, baseUrl));
-
+  if (registerForm) {
+    registerForm.addEventListener('submit', (event) => registerUser(event, baseUrl));
+  }
 });
 
 // Post details
@@ -49,46 +52,46 @@ window.addEventListener('load', () => {
 
 // Fetch posts
 async function fetchPosts(baseUrl) {
-  const res = await fetch(`${baseUrl}/posts`);
-  const data = await res.json();
-  const postsList = document.getElementById('posts-list');
-  const isAdmin = localStorage.getItem('userRole') === 'admin';
+  try {
+    const res = await fetch(`${baseUrl}/posts`);
+    const data = await res.json();
+    const postsList = document.getElementById('posts-list');
+    const isAdmin = localStorage.getItem('userRole') === 'admin';
 
-  if (postsList) {
-    postsList.innerHTML = data
-      .map((post, index) => {
-        const deleteButtonStyle = isAdmin ? '' : 'display: none';
-        const updateButtonStyle = isAdmin ? '' : 'display: none';
+    if (postsList) {
+      postsList.innerHTML = data
+        .map((post, index) => {
+          const deleteButtonStyle = isAdmin ? '' : 'display: none';
+          const updateButtonStyle = isAdmin ? '' : 'display: none';
 
-        return `
-      <div id="${post._id}" class="post">
-          <img src="${post.imageUrl}" alt="Image" />
-          <div class="post-title">
-            ${
-              index === 0
-                ? `<h1><a href="/post/${post._id}">${post.title}</a></h1>`
-                : `<h3><a href="/post/${post._id}">${post.title}</a></h3>`
-            }
-          </div>
-          ${
-            index === 0
-              ? `<span><p>${post.author}</p><p>${post.timestamp}</p></span>`
-              : ''
-          }
-          <div id="admin-buttons">
-            <button class="btn" style="${deleteButtonStyle}" onclick="deletePost('${
-          post._id
-        }', '${baseUrl}')">Delete</button>
-            <button class="btn" style="${updateButtonStyle}" onclick="showUpdateForm('${
-          post._id
-        }', '${post.title}', '${post.content}')">Update</button>
-          </div>
-          ${index === 0 ? '<hr>' : ''}
-          ${index === 0 ? '<h2>All Articles</h2>' : ''}
-        </div>
-      `;
-      })
-      .join('');
+          return `
+            <div id="${post._id}" class="post">
+              <img src="${post.imageUrl}" alt="Image" />
+              <div class="post-title">
+                ${
+                  index === 0
+                    ? `<h1><a href="/post/${post._id}">${post.title}</a></h1>`
+                    : `<h3><a href="/post/${post._id}">${post.title}</a></h3>`
+                }
+              </div>
+              ${
+                index === 0
+                  ? `<span><p>${post.author}</p><p>${post.timestamp}</p></span>`
+                  : ''
+              }
+              <div id="admin-buttons">
+                <button class="btn" style="${deleteButtonStyle}" onclick="deletePost('${post._id}', '${baseUrl}')">Delete</button>
+                <button class="btn" style="${updateButtonStyle}" onclick="showUpdateForm('${post._id}', '${post.title}', '${post.content}')">Update</button>
+              </div>
+              ${index === 0 ? '<hr>' : ''}
+              ${index === 0 ? '<h2>All Articles</h2>' : ''}
+            </div>
+          `;
+        })
+        .join('');
+    }
+  } catch (error) {
+    console.error('Error fetching posts:', error);
   }
 }
 
@@ -98,14 +101,12 @@ async function createPost(event, baseUrl) {
   const contentInput = document.getElementById('content');
   const imageUrlInput = document.getElementById('image-url');
 
-  // Get the values from the input fields
   const title = titleInput.value;
   const content = contentInput.value;
   const imageUrl = imageUrlInput.value;
 
-  // Ensure that inputs are not empty
   if (!title || !content || !imageUrl) {
-    alert('Please fill in all fields 1.');
+    alert('Please fill in all fields.');
     return;
   }
 
@@ -122,40 +123,35 @@ async function createPost(event, baseUrl) {
     }),
   };
 
-  const headers = new Headers({
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${storedToken}`,
-  });
-  const requestOptions = {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify(newPost),
-  };
-
   try {
-    const response = await fetch(`${baseUrl}/posts`, requestOptions);
-    if (!response.ok) {
-      const storedRole = localStorage.getItem('userRole');
-      console.error(`Error creating the post: HTTP Status ${response.status}`);
-    } else {
-      // Clear the input data
+    const response = await fetch(`${baseUrl}/posts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${storedToken}`,
+      },
+      body: JSON.stringify(newPost),
+    });
+
+    if (response.ok) {
       titleInput.value = '';
       contentInput.value = '';
       imageUrlInput.value = '';
-      alert('Create post successful!');
+      alert('Post created successfully!');
+    } else {
+      alert('Failed to create post.');
     }
   } catch (error) {
-    console.error('An errro occured during the fetch:', error);
-    alert('Create post failed.');
+    console.error('Error creating post:', error);
+    alert('Failed to create post.');
   }
   fetchPosts(baseUrl);
 }
 
 // Delete Post
 async function deletePost(postId, baseUrl) {
-  const deleteUrl = `${baseUrl}/posts/${postId}`;
   try {
-    const response = await fetch(deleteUrl, {
+    const response = await fetch(`${baseUrl}/posts/${postId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${storedToken}`,
@@ -163,14 +159,14 @@ async function deletePost(postId, baseUrl) {
     });
 
     if (response.ok) {
-      alert('Delete post successful!');
+      alert('Post deleted successfully!');
       fetchPosts(baseUrl);
     } else {
-      alert('Delete post failed.');
+      alert('Failed to delete post.');
     }
   } catch (error) {
-    console.error(`Error while deleting post: ${error}`);
-    alert('Delete post failed.');
+    console.error('Error deleting post:', error);
+    alert('Failed to delete post.');
   }
 }
 
@@ -178,11 +174,11 @@ async function deletePost(postId, baseUrl) {
 function showUpdateForm(postId, title, content) {
   const updateForm = `
     <form id="update-form">
-        <input type="text" id="update-title" value="${title}" />
-        <textarea id="update-content">${content}</textarea>
-        <button type="submit">Update post</button>
+      <input type="text" id="update-title" value="${title}" />
+      <textarea id="update-content">${content}</textarea>
+      <button type="submit">Update post</button>
     </form>
-    `;
+  `;
 
   const postElement = document.getElementById(postId);
   postElement.innerHTML += updateForm;
@@ -198,16 +194,12 @@ async function updatePost(event, postId) {
   const content = document.getElementById('update-content').value;
   const baseUrl = window.location.origin;
 
-  // ensure that inputs are not empty
   if (!title || !content) {
-    alert('Please fill in all fields 2.');
+    alert('Please fill in all fields.');
     return;
   }
 
-  const updatedPost = {
-    title,
-    content,
-  };
+  const updatedPost = { title, content };
 
   try {
     const response = await fetch(`${baseUrl}/posts/${postId}`, {
@@ -220,14 +212,14 @@ async function updatePost(event, postId) {
     });
 
     if (response.ok) {
-      alert('Update post successful!');
+      alert('Post updated successfully!');
       fetchPosts(baseUrl);
     } else {
-      alert('Update post failed.');
+      alert('Failed to update post.');
     }
   } catch (error) {
-    console.error('An error occured during the fetch', error);
-    alert('Update post failed.');
+    console.error('Error updating post:', error);
+    alert('Failed to update post.');
   }
 }
 
@@ -242,102 +234,74 @@ async function registerUser(event, baseUrl) {
   const password = passwordInput.value;
   const role = roleInput.value;
 
-  const baseUrl1 = baseUrl;
-
-  // ensure that inputs are not empty
   if (!username || !password || !role) {
-    alert('Please fill in all fields 3.');
+    alert('Please fill in all fields.');
     return;
   }
 
-  const newUser = {
-    username,
-    password,
-    role,
-  };
+  const newUser = { username, password, role };
 
-  console.log('Registering new user:', newUser);  // Log user data to verify
+  try {
+    const res = await fetch(`${baseUrl}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newUser),
+    });
 
-
-  const res = await fetch(`${baseUrl1}/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newUser),
-  });
-
-  console.log('Result Res: ', res);
-  
-  const data = await res.json();
-
-  console.log('Res Data: ', data);
-
-  // data.success;
-  // alert('Registered successful!');
-  // // Clear input fields
-  // usernameInput.value = '';
-  // passwordInput.value = '';
-  // roleInput.value = '';
-
-  if (data.success) {
-    alert('Registered successful!');
-    // Clear input fields
-    usernameInput.value = '';
-    passwordInput.value = '';
-    roleInput.value = '';
-  } else {
+    const data = await res.json();
+    if (data.success) {
+      alert('Registration successful!');
+      usernameInput.value = '';
+      passwordInput.value = '';
+      roleInput.value = '';
+    } else {
+      alert('Registration failed.');
+    }
+  } catch (error) {
+    console.error('Error registering user:', error);
     alert('Registration failed.');
   }
 }
 
-// Loging user
+// Login user
 async function loginUser(event, baseUrl) {
   event.preventDefault();
   const usernameInput = document.getElementById('login-username');
   const passwordInput = document.getElementById('login-password');
+
   const username = usernameInput.value;
   const password = passwordInput.value;
 
   if (!username || !password) {
-    alert('Please fill in all fields 4.');
+    alert('Please fill in all fields.');
     return;
   }
 
-  const user = {
-    username,
-    password,
-  };
+  const user = { username, password };
 
-  const res = await fetch(`${baseUrl}/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user),
-  });
+  try {
+    const res = await fetch(`${baseUrl}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user),
+    });
 
-  const data = await res.json();
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem('jwtToken', data.token);
+      localStorage.setItem('userRole', data.role);
+      localStorage.setItem('username', username);
 
-  if (data.success) {
-    localStorage.setItem('jwtToken', data.token);
-    localStorage.setItem('userRole', data.role);
-    localStorage.setItem('username', username);
+      location.reload();
 
-    // Close the hamburge menu if open
-    linksContainer.classList.toggle('active');
-    hamburger.classList.toggle('active');
-
-    // Clear input fields
-    usernameInput.value = '';
-    passwordInput.value = '';
-
-    location.reload();
-
-    if (data.role === 'admin') {
-      showAdminFeatures();
+      if (data.role === 'admin') {
+        showAdminFeatures();
+      }
+    } else {
+      alert('Login failed.');
     }
-  } else {
+  } catch (error) {
+    console.error('Error logging in:', error);
     alert('Login failed.');
   }
 }
@@ -359,7 +323,6 @@ function showAdminFeatures() {
 
 // Logout
 document.addEventListener('DOMContentLoaded', () => {
-  const baseUrl = window.location.origin;
   const registerDiv = document.getElementById('register-div');
   const loginDiv = document.getElementById('login-div');
   const logoutDiv = document.getElementById('logout-div');
