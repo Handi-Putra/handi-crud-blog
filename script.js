@@ -242,6 +242,8 @@ async function registerUser(event, baseUrl) {
   const password = passwordInput.value;
   const role = roleInput.value;
 
+  const baseUrl = window.location.origin;
+
   // ensure that inputs are not empty
   if (!username || !password || !role) {
     alert('Please fill in all fields 3.');
