@@ -269,6 +269,8 @@ async function registerUser(event, baseUrl) {
   
   const data = await res.json();
 
+  console.log('Res Data: ', data);
+
   // data.success;
   // alert('Registered successful!');
   // // Clear input fields
